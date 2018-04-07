@@ -1,7 +1,10 @@
 package com.example.android.tasksecond;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,8 +17,7 @@ import android.widget.PopupWindow;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button b1,closePopupBtn, openPopupBtn;
-    PopupWindow popupWindow;
+    private Button b1;
 
     LinearLayout linearLayout1;
     @Override
@@ -29,46 +31,34 @@ public class MainActivity extends AppCompatActivity {
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //instantiate the popup.xml layout file
-                LayoutInflater layoutInflater = (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                assert layoutInflater != null;
-                View customView = layoutInflater.inflate(R.layout.popup, null);
-
-                closePopupBtn = (Button) customView.findViewById(R.id.closePopup);
-                openPopupBtn = (Button) customView.findViewById(R.id.openPopup);
-
-
-                //instantiate popup window
-                popupWindow = new PopupWindow(customView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-                //display the popup window
-                popupWindow.showAtLocation(linearLayout1, Gravity.CENTER, 0, 0);
-
-                //close the popup window on button click
-                closePopupBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        popupWindow.dismiss();
-
-                    }
-                });
-
-                openPopupBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        popupWindow.dismiss();
-
-                        Intent i = new Intent(MainActivity.this, FetchContact.class);
-                        startActivity(i);
-
-
-                    }
-                });
-
-
+                dialogBox();
             }
         });
     }
 
+    public void dialogBox() {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Allow to fetch contacts");
+        alertDialogBuilder.setPositiveButton("Agree",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Intent i = new Intent(MainActivity.this, FetchContact.class);
+                        startActivity(i);
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("cancel",
+                new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                           arg0.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 }
